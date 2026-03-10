@@ -3,14 +3,8 @@ import torch
 from PIL import Image
 from tqdm import tqdm
 import torch.multiprocessing as mp
-from torchvision import transforms
-import torchvision.transforms.functional as F
 import csv
-import pyiqa
-import cv2
 import numpy as np
-from einops import rearrange
-import csv
 
 from utils import utils_image as util
 
@@ -38,102 +32,45 @@ def is_number(value):
         return False
 
 
-def rgb_to_ycrcb(tensor):
-    tensor_np = tensor.squeeze(0).permute(1, 2, 0).cpu().numpy()
-    ycrcb_np = cv2.cvtColor(tensor_np, cv2.COLOR_RGB2YCrCb)
-    ycrcb_tensor = torch.tensor(ycrcb_np).permute(2, 0, 1).unsqueeze(0).float()
-    return ycrcb_tensor
-
-
 class IQA:
+    """
+    Image Quality Assessment class for NTIRE 2026 Remote Sensing Infrared Image SR Challenge.
+    Calculates PSNR and SSIM metrics, with final score = PSNR + 20 * SSIM.
+    """
     def __init__(self, device=None):
         self.device = device if device else (torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
-        self.iqa_metrics = {
-            'lpips': pyiqa.create_metric('lpips', device=self.device),
-            'dists': pyiqa.create_metric('dists', device=self.device),
-            'niqe': pyiqa.create_metric('niqe', device=self.device),
-            'musiq': pyiqa.create_metric('musiq', device=self.device),
-            'maniqa': pyiqa.create_metric('maniqa', device=self.device),
-            'clipiqa': pyiqa.create_metric('clipiqa', device=self.device)
-        }
 
-    def calculate_values(self, output_image, target_image):
-        if target_image is not None:
-            assert type(output_image) == type(target_image), "The types of output_image and target_image do not match"
-
-        if type(output_image) == torch.Tensor or type(output_image) == np.ndarray:
-            if type(output_image) == np.ndarray:
-                output_image = torch.tensor(output_image).contiguous().float()
-                if target_image is not None:
-                    target_image = torch.tensor(target_image).contiguous().float()
-
-            if len(output_image.shape) == 3:
-
-                output_image = output_image.unsqueeze(0)
-                if target_image is not None:
-                    target_image = target_image.unsqueeze(0)
-
-            if output_image.shape[-1] == 3:
-                print("Rearranging image dimensions from (N, W, H, C) to (N, C, W, H)")
-                output_image = rearrange(output_image, "b h w c -> b c h w").contiguous().float()
-                if target_image is not None:
-                    target_image = rearrange(target_image, "b h w c -> b c h w").contiguous().float()
-            elif output_image.shape[-1] == 4:
-                output_image = output_image[:, :, :, :3]
-                print("Rearranging image dimensions from (N, W, H, C) to (N, C, W, H)")
-                output_image = rearrange(output_image, "b h w c -> b c h w").contiguous().float()
-                if target_image is not None:
-                    target_image = rearrange(target_image, "b h w c -> b c h w").contiguous().float()
-
-            output_tensor = output_image.to(self.device)
-            if target_image is not None:
-                target_tensor = target_image.to(self.device)
-            else:
-                target_tensor = None
-        else:
-            output_tensor = F.to_tensor(output_image).unsqueeze(0).to(self.device)
-            if target_image is not None:
-                target_tensor = F.to_tensor(target_image).unsqueeze(0).to(self.device)
-            else:
-                target_tensor = None
-
-        if target_tensor is not None and output_tensor.shape != target_tensor.shape:
-            print(f"[IQA Reshape] predicted shape: {output_tensor.shape}, target shape: {target_tensor.shape}")
-            min_height = min(output_tensor.shape[2], target_tensor.shape[2])
-            min_width = min(output_tensor.shape[3], target_tensor.shape[3])
-            resize_transform = transforms.Resize((min_height, min_width))
-            output_tensor = resize_transform(output_tensor)
-            target_tensor = resize_transform(target_tensor)
-
-        try:
-            if target_tensor is not None:
-                lpips_value = self.iqa_metrics['lpips'](output_tensor, target_tensor)
-                dists_value = self.iqa_metrics['dists'](output_tensor, target_tensor)
-
-
-            niqe_value = self.iqa_metrics['niqe'](output_tensor)
-            musiq_value = self.iqa_metrics['musiq'](output_tensor)
-            maniqa_value = self.iqa_metrics['maniqa'](output_tensor)
-            clipiqa_value = self.iqa_metrics['clipiqa'](output_tensor)
-
-            result = {}
-
-            if target_tensor is not None:
-                result['LPIPS'] = lpips_value.item()
-                result['DISTS'] = dists_value.item()
-
-            result['NIQE'] = niqe_value.item()
-            result['MUSIQ'] = musiq_value.item()
-            result['MANIQA'] = maniqa_value.item()
-            result['CLIP-IQA'] = clipiqa_value.item()
-        except Exception as e:
-            print(f"Error: {e}")
-            return None
-
+    def calculate_values(self, output_image, target_image, output_path=None, target_path=None):
+        """
+        Calculate PSNR and SSIM for the given image pair.
+        
+        Args:
+            output_image: Output image (SR result)
+            target_image: Target image (HR ground truth)
+            output_path: Path to output image (for util.cal_psnr_ssim)
+            target_path: Path to target image (for util.cal_psnr_ssim)
+        
+        Returns:
+            dict: Dictionary containing 'psnr', 'ssim', and 'score' (PSNR + 20 * SSIM)
+        """
+        result = {}
+        
+        # Calculate PSNR and SSIM using utils_image
+        if output_path is not None and target_path is not None:
+            psnr_value, ssim_value = util.cal_psnr_ssim(output_path, target_path)
+            result['psnr'] = psnr_value
+            result['ssim'] = ssim_value
+            # # Final score: PSNR + 20 * SSIM
+            # result['score'] = psnr_value + 20 * ssim_value
+        
         return result
 
 
 def calculate_iqa_for_partition(output_folder, target_folder, output_files, device, rank):
+    """
+    Calculate IQA metrics (PSNR, SSIM, Score) for a partition of images.
+    Score = PSNR + 20 * SSIM (NTIRE 2026 Remote Sensing Infrared Image SR Challenge)
+    """
     iqa = IQA(device=device)
     local_results = {}
     for output_file in tqdm(output_files, total=len(output_files), desc=f"Processing images on GPU {rank}"):
@@ -151,8 +88,8 @@ def calculate_iqa_for_partition(output_folder, target_folder, output_files, devi
         else:
             target_image = None
 
-        values = iqa.calculate_values(output_image, target_image)
-        values["psnr"], values["ssim"] = util.cal_psnr_ssim(output_image_path, target_image_path)
+        # Calculate PSNR, SSIM and Score using the new IQA class
+        values = iqa.calculate_values(output_image, target_image, output_image_path, target_image_path)
         if values is not None:
             local_results[output_file] = values
 
@@ -241,30 +178,13 @@ if __name__ == "__main__":
         for key in all_keys:
             average_results[key] = np.mean([values.get(key, 0) for values in results.values()])
 
-        average_results['Total Score'] = 0
-        for metric, value in average_results.items():
-            if metric == 'psnr' or metric == 'ssim' or metric == 'Total Score':
-                continue
-            if metric == 'DISTS':                                     # DISTS is a lower-is-better metric
-                average_results['Total Score'] += (1 - value)
-                print(f"DISTS Score: {1 - value}")
-            elif metric == 'LPIPS':                                   # LPIPS is a lower-is-better metric
-                average_results['Total Score'] += (1 - value)
-                print(f"LPIPS Score: {1 - value}")
-            elif metric == 'NIQE':                                    # NIQE is a lower-is-better metric
-                average_results['Total Score'] += max(0, (10 - value) / 10)   
-                print(f"NIQE Score: {max(0, (10 - value) / 10)}")
-            elif metric == 'CLIP-IQA':
-                average_results['Total Score'] += value
-                print(f"CLIP-IQA Score: {value}")
-            elif metric == 'MANIQA':
-                average_results['Total Score'] += value
-                print(f"MANIQA Score: {value}")
-            elif metric == 'MUSIQ':
-                average_results['Total Score'] += value / 100
-                print(f"MUSIQ Score: {value / 100}")
-            else:
-                print(f"Unknown metric: {metric}")
+        # Calculate final score: Score = PSNR + 20 * SSIM (as per NTIRE 2026 Remote Sensing Infrared Image SR challenge)
+        psnr_value = average_results.get('psnr', 0)
+        ssim_value = average_results.get('ssim', 0)
+        average_results['Total Score'] = psnr_value + 20 * ssim_value
+        print(f"PSNR: {psnr_value}")
+        print(f"SSIM: {ssim_value}")
+        print(f"Final Score (PSNR + 20 * SSIM): {average_results['Total Score']}")
 
         print("Average:")
         print(average_results)
