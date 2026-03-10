@@ -51,8 +51,8 @@ def run(model_func, model_name, model_path, device, args, mode="test"):
 
 
 def main(args):
-    utils_logger.logger_info("NTIRE2025-ImageSRx4", log_path="NTIRE2025-ImageSRx4.log")
-    logger = logging.getLogger("NTIRE2025-ImageSRx4")
+    utils_logger.logger_info("NTIRE2026-RemoteSensingIR-SRx4", log_path="NTIRE2026-RemoteSensingIR-SRx4.log")
+    logger = logging.getLogger("NTIRE2026-RemoteSensingIR-SRx4")
 
     # --------------------------------
     # basic settings
@@ -83,10 +83,10 @@ def main(args):
         run(model_func, model_name, model_path, device, args, mode="test")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("NTIRE2025-ImageSRx4")
+    parser = argparse.ArgumentParser("NTIRE2026-RemoteSensingIR-SRx4")
     parser.add_argument("--valid_dir", default=None, type=str, help="Path to the validation set")
     parser.add_argument("--test_dir", default=None, type=str, help="Path to the test set")
-    parser.add_argument("--save_dir", default="NTIRE2025-ImageSRx4/results", type=str)
+    parser.add_argument("--save_dir", default="NTIRE2026-RemoteSensingIR-SRx4/results", type=str)
     parser.add_argument("--model_id", default=0, type=int)
 
     args = parser.parse_args()
