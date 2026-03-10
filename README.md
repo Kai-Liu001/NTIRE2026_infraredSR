@@ -1,0 +1,1 @@
+# NTIRE2026_infraredSR
