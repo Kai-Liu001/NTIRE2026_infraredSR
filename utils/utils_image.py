@@ -547,25 +547,49 @@ def calculate_ssim(img1, img2, border=0):
 
 
 def _calculate_ssim(img, img2, test_y_channel=True):
-    if test_y_channel:
-        img = to_y_channel(img)
-        img2 = to_y_channel(img2)
+    """
+    Calculate SSIM for single channel (grayscale) images.
+    Compatible with NTIRE 2026 Remote Sensing Infrared Image SR Challenge.
+    """
+    # Convert to single channel (grayscale) if needed
+    if len(img.shape) == 3:
+        if img.shape[2] == 3:  # RGB to grayscale
+            img = np.dot(img[..., :3], [0.299, 0.587, 0.114])
+            img2 = np.dot(img2[..., :3], [0.299, 0.587, 0.114])
+        else:  # Take first channel
+            img = img[..., 0]
+            img2 = img2[..., 0]
+    
+    # Calculate SSIM on single channel
+    return _ssim(img, img2)
 
-    ssims = []
-    for i in range(img.shape[2]):
-        ssims.append(_ssim(img[..., i], img2[..., i]))
-    return np.array(ssims).mean()
 
-
-def _calculate_psnr(img, img2, test_y_channel=True,):
-    if test_y_channel:
-        img = to_y_channel(img)
-        img2 = to_y_channel(img2)
-
-    mse = np.mean((img - img2)**2)
-    if mse == 0:
-        return float('inf')
-    return 20. * np.log10(255. / np.sqrt(mse))
+def _calculate_psnr(img, img2, test_y_channel=True):
+    """
+    Calculate PSNR for single channel (grayscale) images.
+    Compatible with NTIRE 2026 Remote Sensing Infrared Image SR Challenge.
+    """
+    # Convert to single channel (grayscale) if needed
+    if len(img.shape) == 3:
+        if img.shape[2] == 3:  # RGB to grayscale
+            img = np.dot(img[..., :3], [0.299, 0.587, 0.114])
+            img2 = np.dot(img2[..., :3], [0.299, 0.587, 0.114])
+        else:  # Take first channel
+            img = img[..., 0]
+            img2 = img2[..., 0]
+    
+    # Ensure integer values
+    img = np.round(img).astype(np.float64)
+    img2 = np.round(img2).astype(np.float64)
+    
+    # Calculate MSE
+    mse = np.mean((img - img2) ** 2)
+    
+    # Add small epsilon to avoid division by zero (consistent with score.py)
+    epsilon = 6.5025e-6
+    psnr_val = 10 * np.log10((255.0 ** 2) / (mse + epsilon))
+    
+    return psnr_val
 
 
 def _ssim(img, img2):
