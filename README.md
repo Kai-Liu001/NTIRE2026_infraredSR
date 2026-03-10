@@ -18,7 +18,7 @@ The challenge is part of the 11th NTIRE Workshop at CVPR 2026, focusing on **r
 ## Challenge results
 
 - **Valid submissions** are ranked; late submissions are shown below the line but excluded from the official leaderboard.
-- **Evaluation set:** all scores are measured on the **InfaredSR-test (200 remote sensing infrared images)**.
+- **Evaluation set:** all scores are measured on the **InfaredSR-test (222 remote sensing infrared images)**.
 - **Ranking Metric**:
   $$\text{Score} = \text{PSNR} + 20 \times \text{SSIM}$$
 - Scores are computed on the **intensity channel of infrared images** with 4-px border shave.
