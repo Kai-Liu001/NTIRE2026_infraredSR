@@ -126,7 +126,6 @@ python eval.py \
 --target_folder "/path/to/test_dir/HR" \
 --metrics_save_path "./IQA_results" \
 --gpu_ids 0 \
---ir_mode True
 ```
 
 The `eval.py` file accepts the following 5 parameters:
@@ -134,7 +133,6 @@ The `eval.py` file accepts the following 5 parameters:
 - `target_folder`: Path to the HR infrared images in the `test` dataset. This is used to calculate FR-IQA metrics.
 - `metrics_save_path`: Directory where the evaluation metrics will be saved.
 - `gpu_ids`: Computation devices. For multi-GPU setups, use the format `0,1,2,3`.
-- `ir_mode`: Whether to use infrared-adapted IQA metrics (default: True).
 
 ### Final Ranking Score
 
