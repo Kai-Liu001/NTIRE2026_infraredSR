@@ -1,0 +1,176 @@
+% CVPR 2026 Paper Template; see https://github.com/cvpr-org/author-kit
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
+\usepackage{cvpr}              % To produce the CAMERA-READY version
+% \usepackage[review]{cvpr}      % To produce the REVIEW version
+% \usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
+
+% Import additional packages in the preamble file, before hyperref
+\input{preamble}
+
+% It is strongly recommended to use hyperref, especially for the review version.
+% hyperref with option pagebackref eases the reviewers' job.
+% Please disable hyperref *only* if you encounter grave issues, 
+% e.g. with the file validation for the camera-ready version.
+%
+% If you comment hyperref and then uncomment it, you should delete *.aux before re-running LaTeX.
+% (Or just hit 'q' on the first LaTeX run, let it finish, and you should be clear).
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,citecolor=cvprblue]{hyperref}
+
+%%%%%%%%% PAPER ID  - PLEASE UPDATE
+\def\paperID{*****} % *** Enter the Paper ID here
+\def\confName{CVPR}
+\def\confYear{2026}
+
+%%%%%%%%% TITLE - PLEASE UPDATE
+\title{NTIRE 2026 Remote Sensing Infrared Image Super-Resolution Challenge Factsheet\\-title of the contribution-}
+
+%%%%%%%%% AUTHORS - PLEASE UPDATE
+\author{First Author\\
+Institution1\\
+Institution1 address\\
+{\tt\small firstauthor@i1.org}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Second Author\\
+Institution2\\
+First line of institution2 address\\
+{\tt\small secondauthor@i2.org}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+% 赛事名称与年份全面更新
+This factsheet template is meant to structure the description of the contributions made by each participating team in the NTIRE 2026 challenge on Remote Sensing Infrared Image Super-Resolution. 
+
+Ideally, all the aspects enumerated below should be addressed.
+The provided information, the codes/executables, and the achieved performance on the testing data are used to decide the awardees of the NTIRE 2026 challenge. 
+
+Reproducibility is a must and needs to be checked for the final test results in order to qualify for the NTIRE awards. 
+
+The main winners will be decided based on overall performance and a number of awards will go to novel, interesting solutions and to solutions that stand up as the best in a particular subcategory the judging committee will decide. Please check the competition webpage and forums for more details.
+
+The winners, the awardees and the top-ranking teams will be invited to co-author the NTIRE 2026 challenge report and to submit papers with their solutions to the NTIRE 2026 workshop. Detailed descriptions are appreciated.
+
+The factsheet, \href{https://github.com/zhengchen1999/NTIRE2026_RemoteSensing_Infrared_SR}{source codes/executables}, trained models should be sent to \textbf{all of the NTIRE 2026 challenge organizers (Kai Liu, Haoyang Yue, Zeli Lin, Zheng Chen, Jingkai Wang, Jue Gong, Radu Timofte and Yulun Zhang)} by email.
+
+\section{Email final submission guide}
+
+\noindent To: 
+% 以下邮箱严格按照图片内容排序，已删除旧有无关邮箱
+{normal.kliu@gmail.com}\\ % Kai Liu
+{yuehaoyang@sjtu.edu.cn}\\ % Haoyang Yue
+{tshzary@gmail.com}\\ % Zeli Lin 
+{zhengchen.cse@gmail.com}\\ % Zheng Chen
+{jingkaiwang100@gmail.com}\\ % Jingkai Wang
+{g1017325431@gmail.com}\\ % Jue Gong
+{Radu.Timofte@uni-wuerzburg.de}\\ % Radu Timofte
+{yulun100@gmail.com}\\
+\noindent cc: your\_team\_members\\
+% 邮件标题更新为2026赛事名称
+Title: NTIRE 2026 Remote Sensing Infrared Image Super-Resolution Challenge - TEAM\_NAME - TEAM\_ID\\
+
+To get your TEAM\_ID, please register at \href{https://docs.google.com/spreadsheets/d/1TR5yivh3o2FeALDMKvRtxOQpkDrk61LNNZVlM1vG5u4/edit?usp=sharing}{Google Sheet}. Please fill in your Team Name, Contact Person, and Contact Email in the first empty row from the top of the sheet.
+
+Body contents should include: 
+
+\begin{enumerate}[label=\alph*)]
+\item team name 
+\item team leader's name and email address 
+\item rest of the team members 
+\item user names on NTIRE 2026 CodaLab competitions % 年份更新
+\item Code, pre-trained model, and factsheet download command, e.g. \texttt{git clone ...}, \texttt{wget ...}
+\item Result download command, e.g. \texttt{wget ...}
+\begin{itemize}
+    \item Please provide different URLs in e) and f)
+\end{itemize}
+\end{enumerate}
+
+\noindent Factsheet must be a compiled pdf file together with a zip with .tex factsheet source files. Please provide a detailed explanation.
+
+\section{Code Submission}
+
+% 仓库链接更新为2026遥感红外赛道（请最终确认官方仓库）
+The code and trained models should be organized according to the \href{https://github.com/Kai-Liu001/NTIRE2026_infraredSR}{GitHub repository}. This code repository provides the basis for comparing the various methods in the challenge. \textbf{Code scripts based on other repositories will not be accepted.} Specifically, you should follow the steps below.
+\begin{enumerate}
+    \item Git clone \href{https://github.com/Kai-Liu001/NTIRE2026_infraredSR}{the repository}
+    \item Put your model script under the \texttt{models/[Team\_ID]\_[Model\_Name]} folder
+    \item Put your pretrained model under the \texttt{model\_zoo/[Team\_ID]\_[Model\_Name]} folder
+    \item Modify \texttt{model\_path} in \texttt{test.py}. Modify the imported models
+    \item \texttt{python test.py} (restore images, details in GitHub)
+    \item \texttt{python eval.py} (eval results, details in GitHub)
+\end{enumerate}
+Please send us the command to download your code, e.g. \texttt{git clone [Your repository link]}
+When submitting the code, please remove the input and output images in the (any) \texttt{data} folder to save the bandwidth.
+
+\section{Factsheet Information}
+
+The factsheet should contain the following information. Most importantly, you should describe your method in detail. The training strategy (optimization method, learning rate schedule, and other parameters such as batch size, and patch size) and training data (information about the additional training data) should also be explained in detail.
+
+\subsection{Team details}
+
+\begin{itemize}
+\item Team name                                  
+\item Team leader name                           
+\item Team leader address, phone number, and email 
+\item Rest of the team members        
+\item Team website URL (if any)                   
+\item Affiliation
+\item Affiliation of the team and/or team members with NTIRE 2026 sponsors (check the workshop website) % 年份更新
+\item User names and entries on the NTIRE 2026 Codalab competitions (development/validation and testing phases) % 年份更新
+\item Best scoring entries of the team during the testing phase
+\item Link to the codes/executables of the solution(s)
+\end{itemize}
+
+\subsection{Method details}
+
+You should describe your proposed solution in detail. This part is equivalent to the methodology part of a conference paper submission. The description should cover the following details.
+
+\begin{itemize}
+\item General method description (How is the network designed to handle remote sensing infrared data.) % 微调以适配红外遥感特性
+\item Representative image/diagram/pipeline of the method(s)  
+\item Training strategy
+\item Experimental results
+\item References                                               
+\end{itemize}
+
+Additionally, you can refer to the following items to provide a detailed description.
+\begin{itemize}
+\item Total method complexity (number of parameters, FLOPs, runtime)
+\item Which pre-trained or external methods/models have been used (for any stage, if any) 
+\item Which data has been used (at any stage, if any) 
+\item Training description
+\item Testing description
+\item Quantitative and qualitative advantages of the proposed solution for remote sensing infrared scenarios
+\item Results of the comparison to other approaches (if any)
+\item Results on other benchmarks (if any)
+\item Novelty degree of the solution and if it has been previously published
+\item It is OK if the proposed solution is based on other works (papers, reports, Internet sources (links), etc). It is ethically wrong and misconduct if you are not properly giving credit and hiding this information.
+\end{itemize}
+
+\section{Other details}
+\begin{itemize}
+\item Planned submission of a solution(s) description paper at NTIRE 2026 workshop. % 年份更新
+\item General comments and impressions of the NTIRE 2026 challenge. % 年份更新
+\item What do you expect from a new challenge in remote sensing image restoration, enhancement and manipulation? % 适配遥感领域
+\item Other comments: encountered difficulties, fairness of the challenge, proposed subcategories, proposed evaluation method(s), etc.
+\end{itemize}
+
+%%%%%%%%% REFERENCES
+{\small
+\bibliographystyle{ieeenat_fullname}
+\bibliography{main}
+}
+
+\end{document}
