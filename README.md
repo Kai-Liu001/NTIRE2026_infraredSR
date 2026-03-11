@@ -1,19 +1,17 @@
 # [NTIRE 2026 Challenge on Remote Sensing Infrared Image Super-Resolution (x4)](https://cvlai.net/ntire/2026/) @ [CVPR 2026](https://cvpr.thecvf.com/)
 
-[![ntire](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fzhengchen1999%2FNTIRE2026_RemoteSensingIR_SR_x4%2Fmain%2Ffigs%2Fdiamond_badge.json)](https://www.cvlai.net/ntire/2026/)
-[![page](https://img.shields.io/badge/Project-Page-blue?logo=github&logoSvg)](https://ntire-sr.github.io/)
-[![CVPRW](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fzhengchen1999%2FNTIRE2026_RemoteSensingIR_SR_x4%2Fmain%2Ffigs%2Fcvf_badge.json)](https://openaccess.thecvf.com/content/CVPR2026W/NTIRE/html/Chen_NTIRE_2026_Challenge_on_Remote_Sensing_Infrared_Image_Super-Resolution_x4_Methods_and_Results_CVPRW_2026_paper.html)
-[![arXiv](https://img.shields.io/badge/Report-arXiv-red?logo=arxiv&logoSvg)](https://arxiv.org/pdf/2604.14582)
-[![supp](https://img.shields.io/badge/Supplementary-Paper-orange.svg)](https://github.com/zhengchen1999/NTIRE2026_RemoteSensingIR_SR_x4/releases/download/Supp/NTIRE.2026.Remote.Sensing.Infrared.Image.Super.Resolution.x4.Supplementary.pdf)
-[![visitors](https://visitor-badge.laobi.icu/badge?page_id=zhengchen1999.NTIRE2026_RemoteSensingIR_SR_x4&right_color=violet)](https://github.com/zhengchen1999/NTIRE2026_RemoteSensingIR_SR_x4)
-[![GitHub Stars](https://img.shields.io/github/stars/zhengchen1999/NTIRE2026_RemoteSensingIR_SR_x4?style=social)](https://github.com/zhengchen1999/NTIRE2026_RemoteSensingIR_SR_x4)
-
 ## About the Challenge
 
-The challenge is part of the 11th NTIRE Workshop at CVPR 2026, focusing on **remote sensing infrared image super-resolution**. Participants are required to recover high-resolution remote sensing infrared images from low-resolution inputs with a 4× upscaling factor.
+The challenge is part of the First NTIRE Workshop at CVPR 2026, focusing on **remote sensing infrared image super-resolution**. Participants are required to recover high-resolution remote sensing infrared images from low-resolution inputs with a 4× upscaling factor.
 
 **Single comprehensive evaluation track:**
 - **Comprehensive Fidelity Track**: ranks methods by a combined score of pixel accuracy (PSNR) and structural similarity (SSIM), suitable for practical remote sensing infrared image applications.
+
+## Notice
+
+All submitted code must follow the format defined in this repository. Submissions that do not follow the required format may be rejected during the final evaluation stage.
+
+After the challenge ends, we will release all submitted code as open-source for reproducibility. If you would like your model to remain confidential, please contact the organizers in advance.
 
 ## Challenge results
 
@@ -24,15 +22,6 @@ The challenge is part of the 11th NTIRE Workshop at CVPR 2026, focusing on **r
 - Scores are computed on the **intensity channel of infrared images** with 4-px border shave.
 - Higher Score indicates better performance.
 
-## Certificates
-
-The top three teams by the comprehensive Score have received **NTIRE 2026 Remote Sensing Infrared Image SR (×4) Challenge certificates**:  
-
-1. [Team Name 1]  
-2. [Team Name 2]  
-3. [Team Name 3]  
-
-All certificates can be downloaded from [Google Drive](https://drive.google.com/file/d/1XXXXXXXXX/view?usp=sharing).
 
 ## About this repository
 
@@ -40,55 +29,54 @@ This repository summarizes the solutions submitted by the participants during th
 
 ## How to test the model?
 
-1. `https://github.com/Kai-Liu001/NTIRE2026_infraredSR.git`
-2. Download the model weights from:
-
-    - [Baidu Pan](https://pan.baidu.com/s/1XXXXXXXXX?pwd=RSIR) (validation code: **InfaredSR**)
-    - [Google Drive](https://drive.google.com/drive/folders/1XXXXXXXXX?usp=drive_link)
-
-    Put the downloaded weights in the `./model_zoo` folder.
-3. Select the model you would like to test:
+1. `git clone https://github.com/Kai-Liu001/NTIRE2026_infraredSR.git`
+   
+2. Select the model you would like to test:
     ```bash
     CUDA_VISIBLE_DEVICES=0 python test.py --valid_dir [path to val data dir] --test_dir [path to test data dir] --save_dir [path to your save dir] --model_id 0
     ```
     - You can use either `--valid_dir`, or `--test_dir`, or both of them. Be sure to change the directories `--valid_dir`/`--test_dir` and `--save_dir`.
-    - We provide a baseline (team00): DAT-IR (infrared-adapted DAT, default). Switch models (default is DAT-IR) by commenting the code in [test.py](./test.py#L19).
-4. We also provide the output of each team from:
 
-    - [Baidu Pan](https://pan.baidu.com/s/1XXXXXXXXX?pwd=RSIR) (validation code: **InfaredSR**)
-    - [Google Drive](https://drive.google.com/drive/folders/1XXXXXXXXX?usp=drive_link)
+## How to add your model to this baseline?
 
-    You can directly download the output of each team and evaluate the model using the provided script.
-5. Some methods cannot be integrated into our codebase. We provide their instructions in the corresponding folder. If you still fail to test the model, please contact the team leaders. Their contact information is as follows:
+> [!IMPORTANT]
+>
+> **🚨 Submissions that do not follow the official format will be rejected.**
 
-| Index |       Team      |            Leader            |              Email              |
-|:-----:|:---------------:|:----------------------------:|:-------------------------------:|
-|   1   | [Team 1]        | [Leader Name 1]              | [Email 1]                       |
-|   2   | [Team 2]        | [Leader Name 2]              | [Email 2]                       |
-|   3   | [Team 3]        | [Leader Name 3]              | [Email 3]                       |
-|   4   | [Team 4]        | [Leader Name 4]              | [Email 4]                       |
-|   5   | [Team 5]        | [Leader Name 5]              | [Email 5]                       |
-|   6   | [Team 6]        | [Leader Name 6]              | [Email 6]                       |
-|   7   | [Team 7]        | [Leader Name 7]              | [Email 7]                       |
-|   8   | [Team 8]        | [Leader Name 8]              | [Email 8]                       |
-|   9   | [Team 9]        | [Leader Name 9]              | [Email 9]                       |
-|  10   | [Team 10]       | [Leader Name 10]             | [Email 10]                      |
-|  11   | [Team 11]       | [Leader Name 11]             | [Email 11]                      |
-|  12   | [Team 12]       | [Leader Name 12]             | [Email 12]                      |
-|  13   | [Team 13]       | [Leader Name 13]             | [Email 13]                      |
-|  14   | [Team 14]       | [Leader Name 14]             | [Email 14]                      |
-|  15   | [Team 15]       | [Leader Name 15]             | [Email 15]                      |
-|  16   | [Team 16]       | [Leader Name 16]             | [Email 16]                      |
-|  17   | [Team 17]       | [Leader Name 17]             | [Email 17]                      |
-|  18   | [Team 18]       | [Leader Name 18]             | [Email 18]                      |
-|  19   | [Team 19]       | [Leader Name 19]             | [Email 19]                      |
-|  20   | [Team 20]       | [Leader Name 20]             | [Email 20]                      |
-|  21   | [Team 21]       | [Leader Name 21]             | [Email 21]                      |
-|  22   | [Team 22]       | [Leader Name 22]             | [Email 22]                      |
-|  23   | [Team 23]       | [Leader Name 23]             | [Email 23]                      |
-|  24   | [Team 24]       | [Leader Name 24]             | [Email 24]                      |
-|  25   | [Team 25]       | [Leader Name 25]             | [Email 25]                      |
-|  26   | [Team 26]       | [Leader Name 26]             | [Email 26]                      |
+1. Register your team in the [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1TR5yivh3o2FeALDMKvRtxOQpkDrk61LNNZVlM1vG5u4/edit?usp=sharing) and get your team ID.
+2. Put your the code of your model in folder:  `./models/[Your_Team_ID]_[Your_Model_Name]`
+
+   - Please zero pad [Your_Team_ID] into two digits: e.g. 00, 01, 02
+3. Put the pretrained model in folder: `./model_zoo/[Your_Team_ID]_[Your_Model_Name]`
+
+   - Please zero pad [Your_Team_ID] into two digits: e.g. 00, 01, 02
+   - Note: Please provide a download link for the pretrained model, if the file size exceeds **100 MB**. Put the link in `./model_zoo/[Your_Team_ID]_[Your_Model_Name]/[Your_Team_ID]_[Your_Model_Name].txt`: e.g. [team00_dat.txt](./model_zoo/team00_dat/team00_dat.txt)
+4. Add your model to the model loader `test.py` as follows:
+
+   - Edit the `else` to `elif` in [test.py](./test.py#L24), and then you can add your own model with model id.
+
+   - `model_func` **must** be a function, which accept **4 params**. 
+
+     - `model_dir`: the pretrained model. Participants are expected to save their pretrained model in `./model_zoo/` with in a folder named `[Your_Team_ID]_[Your_Model_Name]` (e.g., team00_dat). 
+
+     - `input_path`: a folder contains several images in PNG format. 
+
+     - `output_path`: a folder contains restored images in PNG format. Please follow the section Folder Structure. 
+
+     - `device`: computation device.
+5. Send us the command to download your code, e.g,
+
+   - `git clone [Your repository link]`
+   - We will add your code and model checkpoint to the repository after the challenge.
+
+> [!TIP]
+>
+> Your model code does not need to be fully refactored to fit this repository. 
+> Instead, you may add a lightweight external interface (e.g., `models/team00_DAT/io.py`) that wraps your existing code, while keeping the original implementation unchanged.
+>
+> Refer to previous NTIRE challenge implementations for examples: 
+> https://github.com/zhengchen1999/NTIRE2025_ImageSR_x4/tree/main/models
+
 
 ## How to eval images using IQA metrics?
 
@@ -140,12 +128,6 @@ The official ranking is determined by the comprehensive score:
 $$\text{Score} = \text{PSNR} + 20 \times \text{SSIM}$$
 
 All metrics are averaged over the test set. Higher Score = better rank.
-
-## NTIRE Remote Sensing Infrared Image SR ×4 Challenge Series
-
-Code repositories and accompanying technical report PDFs for each edition:  
-
-- **NTIRE 2026**: [CODE](https://github.com/zhengchen1999/NTIRE2026_RemoteSensingIR_SR_x4) | [PDF](https://arxiv.org/pdf/2604.14582)  
 
 ## Citation
 
