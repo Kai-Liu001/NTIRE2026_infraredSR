@@ -8,6 +8,7 @@ from torchvision.utils import make_grid
 from datetime import datetime
 # import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
+from torch.nn.functional import conv2d
 
 
 IMG_EXTENSIONS = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
@@ -833,15 +834,90 @@ def imresize_np(img, scale, antialiasing=True):
 
     return out_2.numpy()
 
+def _gaussian_kernel(size=11, sigma=1.5):
+    """Generate Gaussian kernel for single channel"""
+    x = np.linspace(-(size//2), size//2, size)
+    g = np.exp(-(x**2) / (2 * sigma**2)) / (np.sqrt(2 * np.pi) * sigma)
+    kernel = np.outer(g, g)
+    return kernel / kernel.sum()
+
+def calculate_ssim_codabench(img1, img2, data_range=255.0):
+    """Calculate SSIM for single channel images"""
+    # Normalize to [0, 1]
+    img1_norm = img1 / data_range
+    img2_norm = img2 / data_range
+    
+    # Generate Gaussian kernel [1, 1, H, W]
+    kernel = _gaussian_kernel()
+    kernel = torch.from_numpy(kernel).float().unsqueeze(0).unsqueeze(0)
+    
+    # Convert images to PyTorch tensors [1, 1, H, W]
+    # Remove channel dimension for 2D images
+    if len(img1_norm.shape) == 3:
+        img1_2d = img1_norm[:, :, 0]
+        img2_2d = img2_norm[:, :, 0]
+    else:
+        img1_2d = img1_norm
+        img2_2d = img2_norm
+    
+    img1_tensor = torch.from_numpy(img1_2d).unsqueeze(0).unsqueeze(0).float()
+    img2_tensor = torch.from_numpy(img2_2d).unsqueeze(0).unsqueeze(0).float()
+    
+    # Calculate mean
+    mu1 = conv2d(img1_tensor, kernel, padding='same')
+    mu2 = conv2d(img2_tensor, kernel, padding='same')
+    
+    # Calculate variance and covariance
+    mu1_sq = mu1 ** 2
+    mu2_sq = mu2 ** 2
+    mu1_mu2 = mu1 * mu2
+    
+    sigma1_sq = conv2d(img1_tensor**2, kernel, padding='same') - mu1_sq
+    sigma2_sq = conv2d(img2_tensor**2, kernel, padding='same') - mu2_sq
+    sigma12 = conv2d(img1_tensor*img2_tensor, kernel, padding='same') - mu1_mu2
+    
+    # SSIM formula
+    C1 = (0.01) ** 2
+    C2 = (0.03) ** 2
+    ssim_map = ((2 * mu1_mu2 + C1) * (2 * sigma12 + C2)) / ((mu1_sq + mu2_sq + C1) * (sigma1_sq + sigma2_sq + C2))
+    
+    return ssim_map.mean().item()
+
+def calculate_psnr_codabench(img1, img2, data_range=255.0):
+    """Calculate PSNR for single channel images"""
+    # Remove channel dimension if present
+    if len(img1.shape) == 3:
+        img1_2d = img1[:, :, 0]
+        img2_2d = img2[:, :, 0]
+    else:
+        img1_2d = img1
+        img2_2d = img2
+    
+    # Ensure integer values
+    img1_2d = np.round(img1_2d)
+    img2_2d = np.round(img2_2d)
+    
+    # Calculate MSE
+    mse = np.mean((img1_2d - img2_2d) ** 2)
+    
+    # Add small epsilon to avoid division by zero
+    epsilon = 6.5025e-6
+    psnr_val = 10 * np.log10((data_range ** 2) / (mse + epsilon))
+    
+    return psnr_val
+
 def cal_psnr_ssim(hr_path, sr_path, sf=4):
     img_hr = imread_uint(hr_path, n_channels=3)
     img_hr = img_hr.squeeze()
-    img_hr = modcrop(img_hr, sf)
+    img_hr = np.round(img_hr).astype(np.float32)
+    # img_hr = modcrop(img_hr, sf)
     img_sr = imread_uint(sr_path, n_channels=3)
     img_sr = img_sr.squeeze()
-    img_sr = modcrop(img_sr, sf)
-    psnr = calculate_psnr(img_sr, img_hr)
-    ssim = calculate_ssim(img_sr, img_hr)
+    img_sr = np.round(img_sr).astype(np.float32)
+    # img_sr = modcrop(img_sr, sf)
+    data_range = 255.0 if img_hr.max() > 1 else 1.0
+    psnr = calculate_psnr_codabench(img_sr, img_hr, data_range)
+    ssim = calculate_ssim_codabench(img_sr, img_hr, data_range)
     return psnr, ssim
 
 if __name__ == '__main__':
