@@ -22,7 +22,7 @@ After the challenge ends, we will release all submitted code as open-source for 
 - Scores are computed on the **intensity channel of infrared images** with 4-px border shave.
 - Higher Score indicates better performance.
 
-![BQACAgUAAyEGAASHRsPbAAETKE9p33no6bJwxsp5cUfn5dhh0a-HlwACTSQAAhLfAAFXmqhR6JKcZws7BA.png](https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAETKE9p33no6bJwxsp5cUfn5dhh0a-HlwACTSQAAhLfAAFXmqhR6JKcZws7BA.png)
+![](./figs/results.png)
 
 ## About this repository
 
