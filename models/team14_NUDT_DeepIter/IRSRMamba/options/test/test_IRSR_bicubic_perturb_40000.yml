@@ -1,0 +1,41 @@
+# general settings
+name: IRSR_finetune_bicubic_perturb_40000
+model_type: MambaIRModel
+scale: 4
+num_gpu: auto
+manual_seed: 10
+
+datasets:
+  test_lr_only:  # 只使用 LR 图像的测试数据集
+    name: LR_Only_Inference
+    type: SingleImageDataset
+    dataroot_lq: /hpcfs/fhome/competitor01/lhx/IRSRMamba/score/train/val_LR_X4/X4  # LR 图像路径
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: IRSRMamba
+  upscale: 4
+  in_chans: 3
+  img_size: 64
+  img_range: 1.
+  d_state: 16
+  depths: [8, 8, 8, 8, 8, 8]
+  embed_dim: 180
+  mlp_ratio: 2
+  upsampler: 'pixelshuffle'
+  resi_connection: '1conv'
+
+# path
+path:
+  pretrain_network_g: /hpcfs/fhome/competitor01/lhx/IRSRMamba/experiments/finetune_IRSR_x4_bicubic_perturb/models/net_g_40000.pth  # 使用双三次下采样+参数扰动训练的 40000 iter 模型
+  strict_load_g: false
+
+# validation settings
+val:
+  save_img: true
+  suffix: ''  # 空字符串表示不加后缀，直接保存为 0.png, 1.png 等
+
+  # 只有 LR 图像时，关闭指标计算
+  metrics: null

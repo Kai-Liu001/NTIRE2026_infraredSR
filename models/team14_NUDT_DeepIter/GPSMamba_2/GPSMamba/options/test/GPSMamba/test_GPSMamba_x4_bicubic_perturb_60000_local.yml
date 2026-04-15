@@ -1,0 +1,36 @@
+name: GPS_fine_tune_bicubic_perturb_60000_local
+model_type: MambaIRModel
+scale: 4
+num_gpu: auto
+manual_seed: 10
+datasets:
+  test_lr_only:
+    name: LR_Only_Inference
+    type: SingleImageDataset
+    dataroot_lq: /home/NTIRE26/data2/NTIRE2026/InfraredSR/team14/RSISR/../../dataset_test/LR/X4
+    io_backend:
+      type: disk
+network_g:
+  type: GPSMamba
+  upscale: 4
+  in_chans: 3
+  img_size: 64
+  img_range: 1.
+  embed_dim: 174
+  d_state: 16
+  depths: [8, 8, 8, 8, 8, 8]
+  num_heads: [6, 6, 6, 6, 6, 6]
+  window_size: 16
+  inner_rank: 64
+  num_tokens: 128
+  convffn_kernel_size: 5
+  mlp_ratio: 2.
+  upsampler: 'pixelshuffle'
+  resi_connection: '1conv'
+path:
+  pretrain_network_g: /home/NTIRE26/data2/NTIRE2026/InfraredSR/team14/RSISR/model_zoo/team14_ensemble/GPSMamba/net_g_60000.pth
+  strict_load_g: true
+val:
+  save_img: true
+  suffix: ''
+  metrics: null

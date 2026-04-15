@@ -1,0 +1,46 @@
+# general settings
+name: GPS_fine_tune_mixed_perturb_15000
+model_type: MambaIRModel
+scale: 4
+num_gpu: auto
+manual_seed: 10
+
+datasets:
+  test_lr_only:  # 只使用 LR 图像的测试数据集
+    name: LR_Only_Inference
+    type: SingleImageDataset
+    dataroot_lq: /hpcfs/fhome/competitor01/lhx/GPSMamba_2/GPSMamba/score/train/val_LR_X4/X4  # LR 图像路径
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: GPSMamba
+  upscale: 4
+  in_chans: 3
+  img_size: 64
+  img_range: 1.
+  embed_dim: 174
+  d_state: 16
+  depths: [8, 8, 8,8,8,8] 
+  num_heads: [6,6,6,6,6,6]
+  window_size: 16
+  inner_rank: 64
+  num_tokens: 128
+  convffn_kernel_size: 5
+  mlp_ratio: 2.
+  upsampler: 'pixelshuffle'
+  resi_connection: '1conv'
+
+# path
+path:
+  pretrain_network_g: /hpcfs/fhome/competitor01/lhx/GPSMamba_2/GPSMamba/experiments/finetune_GPS_x4_mixed_perturb/models/net_g_15000.pth  # 使用 15000 迭代模型
+  strict_load_g: true
+
+# validation settings
+val:
+  save_img: true
+  suffix: ''  # 空字符串表示不加后缀，直接保存为 0.png, 1.png 等
+
+  # 只有 LR 图像时，关闭指标计算
+  metrics: null

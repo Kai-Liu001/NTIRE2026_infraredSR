@@ -1,0 +1,43 @@
+# general settings
+name: GPS_bicubic_perturb_15000
+model_type: MambaIRModel
+scale: 4
+num_gpu: auto
+manual_seed: 10
+
+datasets:
+  test_lr_only:
+    name: LR_Only_Inference
+    type: SingleImageDataset
+    dataroot_lq: /hpcfs/fhome/competitor01/lhx/testLR_X4/X4
+    io_backend:
+      type: disk
+
+network_g:
+  type: GPSMamba
+  upscale: 4
+  in_chans: 3
+  img_size: 64
+  img_range: 1.
+  embed_dim: 174
+  d_state: 16
+  depths: [8, 8, 8, 8, 8, 8]
+  num_heads: [6, 6, 6, 6, 6, 6]
+  window_size: 16
+  inner_rank: 64
+  num_tokens: 128
+  convffn_kernel_size: 5
+  mlp_ratio: 2.
+  upsampler: 'pixelshuffle'
+  resi_connection: '1conv'
+
+path:
+  pretrain_network_g: /hpcfs/fhome/competitor01/lhx/GPSMamba_2/GPSMamba/experiments/finetune_GPS_x4_bicubic_perturb/models/net_g_15000.pth
+  strict_load_g: true
+
+val:
+  save_img: true
+  suffix: ''
+
+  metrics: null
+
