@@ -1,0 +1,19 @@
+data:
+  hr_crop: 512
+  ctx_crop: 1024
+  scale_up: 8
+  normalize_mean: 0.5
+  normalize_std: 0.5
+model:
+  model_name: openmmlab/upernet-swin-base
+  backbone_init: scratch
+  cross_attention_heads: 1
+  fusion_mlp_ratio: 4.0
+  fusion_drop_path: 0.1
+  decoder_hidden_size: 512
+  head_type: hybrid
+  head_num_blocks: 14
+  head_window_size: 8
+  head_attention_heads: 8
+  residual_zero_init: true
+  clamp_eval: true
